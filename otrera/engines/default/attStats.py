@@ -80,18 +80,18 @@ def get_craft(INT,ART,DEX):
 
 def get_stats(atts):
 	stats = {}
-	stats["maxHP"] = get_maxHP(atts["CON"])
+	stats["MaxHP"] = get_maxHP(atts["CON"])
 	stats["Evade"] = get_evade(atts["DEX"],atts["ART"])
 	stats["Hit"] = get_hit(atts["DEX"],atts["ART"])
 	stats["Accuracy"] = get_accuracy(atts["DEX"])
-	stats["Physical Defense"] = get_physical_defense(atts["MGT"],atts["CON"])
-	stats["Physical Attack"] = get_physical_attack(atts["MGT"])
-	stats["Magical Defense"] = get_magic_defense(atts["DIV"],atts["ART"])
-	stats["Magical Attack"] = get_magic_attack(atts["DIV"])
+	stats["PhyDef"] = get_physical_defense(atts["MGT"],atts["CON"])
+	stats["PhyAtk"] = get_physical_attack(atts["MGT"])
+	stats["MagDef"] = get_magic_defense(atts["DIV"],atts["ART"])
+	stats["MagAtk"] = get_magic_attack(atts["DIV"])
 	stats["Resistance"] = get_resistance(atts["CON"])
-	stats["Carry Strength"] = get_carry_strength(atts["MGT"])
-	stats["Casting Speed"] = get_casting_speed(atts["ART"])
-	stats["Spell Failure"] = get_spell_failure(atts["INT"],atts["ART"])
+	stats["CarryStrength"] = get_carry_strength(atts["MGT"])
+	stats["CastingSpeed"] = get_casting_speed(atts["ART"])
+	stats["SpellFailure"] = get_spell_failure(atts["INT"],atts["ART"])
 	stats["Craft"] = get_craft(atts["INT"],atts["ART"],atts["DEX"])
 	return stats
 
@@ -110,11 +110,12 @@ def get_attribute_skills(charac):
 	# requirement level and make skill objects from them
 	skill_names = []
 	skill_objects = []
-	atts = charac.attributes.keys()
-	for att in atts:
+	charatts = charac.att_Map()
+	attkeys = charatts.keys()
+	for att in attkeys:
 		att_dict = e[att]
 		for key in att_dict.keys():
-			if int(key) <= int(charac.attributes[att]):
+			if int(key) <= int(charatts[att]):
 				skill_names.extend(att_dict[key])
 	for name in skill_names:
 		obj = Skill(make=name)

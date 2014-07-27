@@ -1,8 +1,7 @@
+#!/usr/bin/env python
 # Program for building characters
 # For now it just prints character info to the console
 # We need to give this script the ability to save characters as JSON blobs.
-
-#!/usr/bin/env python
 
 from attStats import *
 from levels import *
@@ -24,9 +23,12 @@ def custom_level_naked_character_builder():
 	charac.level = int(raw_input("What is the character's level?: "))
 	charac.character_class = raw_input("What is the character's class?: ").lower().strip()
 	level_mods = get_level_mods(charac.character_class, charac.level)
-	for key in charac.attributes.keys():
-		charac.attributes[key] = charac.attributes[key] + int(level_mods[key])
-	charac.stats = get_stats(charac.attributes)
+	charmap = charac.att_Map()
+	for key in charmap:
+		charmap[key] = charmap[key]+ int(level_mods[key])
+	charac.update_atts(charmap)
+	stats = get_stats(charmap)
+	charac.update_stats(stats)
 	return charac
 
 def fully_equipped_character_builder():
@@ -89,7 +91,6 @@ def get_base_attributes(charac):
 	return charac
 
 def publish_character(charac):
-	stats = charac.stats
 	print "Character Name: %s" % charac.name
 	print "MaxHP = %s" % str(stats["maxHP"])
 	print "Evade = %s" % str(stats["Evade"])

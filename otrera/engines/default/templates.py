@@ -61,24 +61,19 @@ templates = {
 				"tag" : "",
 				"level" : "0",
 				"skills" : [],
-				"equipment" : {
-					"weapon" : "naked",
-					"armor" : "naked",
-					"mods" : []
-					},
+				"weapon" : "naked",
+				"armor" : "naked",
+				"mods" : []
 				"inventory" : [],
 				"carry_weight" : "0",
-				"attributes" : {
-					"DEX":0,"ART":0,"MGT":0,
-					"DIV":0,"INT":0,"CON":0
-					},
-				"stats" : {
-					"MaxHP":"1","Evade":"0","Hit":"0",
-					"Accuracy":"0","Physical Defense":"0",
-					"Physical Attack":"0","Magical Defense":"0",
-					"Magical Attack":"0","Resistance":"0",
-					"Carry Strength":"0","Casting Speed":"0",
-					"Spell Failure":"0","Craft":"0"
+				"DEX":0,"ART":0,"MGT":0,
+				"DIV":0,"INT":0,"CON":0
+				"MaxHP":"1","Evade":"0","Hit":"0",
+				"Accuracy":"0","PhyDef":"0",
+				"PhyAtk":"0","MagDef":"0",
+				"MagAtk":"0","Resistance":"0",
+				"CarryStrength":"0","CastingSpeed":"0",
+				"SpellFailure":"0","Craft":"0"
 					}
 				}
 			},

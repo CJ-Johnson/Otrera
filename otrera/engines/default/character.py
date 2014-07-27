@@ -25,29 +25,51 @@ class Character(object):
 
 		self.skills = []
 
-		self.equipment = {
-				"weapon" : "naked",
-				"armor" : "naked",
-				"mods" : []
-				}
+		self.weapon = "naked"
+
+		self.armor = "naked"
+
+		self.eqp_mods = []
+
+#		self.equipment = {
+#				"weapon" : "naked",
+#				"armor" : "naked",
+#				"mods" : []
+#				}
 
 		self.inventory = []
 
 		self.carry_weight = 0
 
-		self.attributes = {
-				"DEX":0,"ART":0,"MGT":0,
-				"DIV":0,"INT":0,"CON":0
-				}
+		self.DEX = 0
+		self.ART = 0
+		self.MGT = 0
+		self.DIV = 0
+		self.INT = 0
+		self.CON = 0
 
-		self.stats = {
-				"MaxHP":"1","Evade":"0","Hit":"0",
-				"Accuracy":"0","Physical Defense":"0",
-				"Physical Attack":"0","Magical Defense":"0",
-				"Magical Attack":"0","Resistance":"0",
-				"Carry Strength":"0","Casting Speed":"0",
-				"Spell Failure":"0","Craft":"0"
-				}
+		self.MaxHP = 1
+		self.Evade = 0
+		self.Hit = 0
+		self.Accuracy = 0
+		self.PhyDef = 0
+		self.PhyAtk = 0
+		self.MagDef = 0
+		self.MagAtk = 0
+		self.RES = 0
+		self.CarryStrength = 0
+		self.CastingSpeed = 0
+		self.SpellFailure = 0
+		self.Craft = 0
+
+#		self.stats = {
+#				"MaxHP":"1","Evade":"0","Hit":"0",
+#				"Accuracy":"0","Physical Defense":"0",
+#				"Physical Attack":"0","Magical Defense":"0",
+#				"Magical Attack":"0","Resistance":"0",
+#				"Carry Strength":"0","Casting Speed":"0",
+#				"Spell Failure":"0","Craft":"0"
+#				}
 
 		if make is not None:
 			self.load(make)
@@ -65,14 +87,42 @@ class Character(object):
 		self.attributes = k["attributes"]
 		self.stats = k["stats"]
 
-	def set_attribute(self, attribute, value):
-		self.attributes[attribute] = int(value)
+	def stat_Map(self):
+		return {"MaxHP":self.MaxHP,"Evade":self.Evade,"Hit":self.Hit,
+				"Accuracy":self.Accuracy,"PhyDef":self.PhyDef,
+				"PhyAtk":self.PhyAtk,"MagDef":self.MagDef,"MagAtk":self.MagAtk,
+				"Resistance":self.Resistance,"CarryStrength":self.CarryStrength,
+				"CastingSpeed":self.CastingSpeed,"SpellFailure":self.SpellFailure,
+				"Craft":self.Craft}
 
-	def set_stat(self, stat, value):
-		self.stats[stat] = str(value)
+	def update_stats(self, stat_dict):
+		self.MaxHP = stat_dict["MaxHP"]
+		self.Evade = stat_dict["Evade"]
+		self.Hit = stat_dict["Hit"]
+		self.PhyAtk = stat_dict["PhyAtk"]
+		self.PhyDef = stat_dict["PhyDef"]
+		self.MagAtk = stat_dict["MagAtk"]
+		self.MagDef = stat_dict["MagDef"]
+		self.Resistance = stat_dict["Resistance"]
+		self.CarryStrength = stat_dict["CarryStrength"]
+		self.CastingSpeed = stat_dict["CastingSpeed"]
+		self.SpellFailure = stat_dict["SpellFailure"]
+		self.Craft = stat_dict["Craft"]
 
 	def set_name(self, name):
 		self.name = name
+
+	def att_Map(self):
+		return {"DEX":self.DEX,"MGT":self.MGT,"CON":self.CON,
+				"DIV":self.DIV,"INT":self.INT,"ART":self.ART}
+
+	def update_atts(self, att_dict):
+		self.DEX = att_dict["DEX"]
+		self.DIV = att_dict["DIV"]
+		self.CON = att_dict["CON"]
+		self.MGT = att_dict["MGT"]
+		self.INT = att_dict["INT"]
+		self.ART = att_dict["ART"]
 
 	def equip_armor(self, armor):
 		if armor not in self.inventory:
@@ -80,7 +130,7 @@ class Character(object):
 		elif self.character_class not in e[armor.kind]["classes"]:
 			print "%s class cannot equip %s armor type" % (self.character_class, armor.kind)
 		else:
-			self.equipment["armor"] = armor
+			self.armor = armor
 
 	def equip_weapon(self, weapon):
 		# Equips a weapon object. Performs some validation to ensure weapon is equipable
@@ -89,7 +139,7 @@ class Character(object):
 		elif self.character_class not in e[weapon.kind]["classes"]:
 			print "%s class cannot equip %s weapon type" % (self.character_class, weapon.kind)
 		else:
-			self.equipment["weapon"] = weapon
+			self.weapon = weapon
 
 	def equip_weapon_from_string(self, weapon_string):
 		# Sometimes you want to equip a weapon knowing only the string name.
@@ -107,6 +157,7 @@ class Character(object):
 	def add_skill(self, skill_obj):
 		# Add skill to skill list. Perform validation to make sure character can use it.
 		req = skill_obj.requirements
+		attMap = self.att_Map()
 		if int(req["Level"]) > self.level:
 			print "Character level too low to acquire this skill"
 			exit()
@@ -116,7 +167,7 @@ class Character(object):
 				exit()
 		elif req["Attributes"] != []:
 			for att in req["Attributes"]:
-				if self.attributes[att[:3]] < int(att[3:]):
+				if attMap[att[:3]] < int(att[3:]):
 					print "Character does not meet attribute requirement for skill"
 					exit()
 		self.skills.append(skill_obj)
@@ -131,14 +182,14 @@ class Character(object):
 		# Adjust for inventory weight and carry strength
 		self.set_carry_weight()
 		weight_penalty = self.carry_weight/10
-		mgt_adjusted = weight_penalty - int(self.stats["Carry Strength"])
-		evade = int(self.stats["Evade"]) - mgt_adjusted
-		self.stats["Evade"] = str(evade)
+		mgt_adjusted = weight_penalty - int(self.CarryStrength)
+		evade = int(self.Evade) - mgt_adjusted
+		self.Evade = evade
 
 	def get_equipment_mods(self):
 		mods = []
-		if self.equipment["weapon"].name in e.keys():
-			mods.extend(self.equipment["weapon"].spec_mods)
-		elif self.equipment["armor"].name in e.keys():
-			mods.extend(self.equipment["armor"].spec_mods)
-		self.equipment["mods"] = mods
+		if self.weapon.name in e.keys():
+			mods.extend(self.weapon.spec_mods)
+		elif self.armor.name in e.keys():
+			mods.extend(self.armor.spec_mods)
+		self.eqp_mods = mods
